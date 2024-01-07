@@ -111,11 +111,26 @@ def attempt() -> bool:
 
 def mainloop():
 	attempts = 0
-	successes = 0
+	tracked: dict[str, int] = {
+		"bijou": 0,
+		"kronii": 0,
+		"ina": 0,
+		"calliope": 0
+	}
+	names: list[str] = sorted(tracked)
 
 	while True:
 		attempts += 1
-		if attempt(): successes += 1
-		if attempts % 100_000 == 0: print(f"{attempts=} {successes/attempts}")
+		qualified = run_groups()
+
+		for racer in qualified:
+			if racer.name in tracked:
+				tracked[racer.name] += 1
+
+		if attempts % 100_000 == 0:
+			print(f"{attempts=}")
+
+			for name in names:
+				print(f"{name}: {tracked[name]/attempts:.3f}")
 
 mainloop()
